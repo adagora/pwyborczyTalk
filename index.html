@@ -6,8 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WyborczyTalk</title>
 
-    <!-- https://tailwindcss.com/docs/installation/play-cdn -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Include Tailwind CSS from a CDN -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.7/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
 
     <style>
       html,
@@ -26,11 +29,7 @@
       }
 
       .text-gradient {
-        background: linear-gradient(
-          to right,
-          #007bff,
-          #00c2ff
-        );
+        background: linear-gradient(to right, #007bff, #00c2ff);
         -webkit-background-clip: text;
         color: transparent;
         display: inline;
@@ -39,62 +38,76 @@
   </head>
 
   <body>
-    <div class="flex flex-col items-center justify-center h-screen pt-5">
+    <div class="flex flex-col items-center min-h-screen pt-5">
       <div class="flex justify-center flex-wrap">
         <div class="text-5xl text-white">wyborczy</div>
         <div class="text-5xl">
           <span class="text-gradient"><b>Talk</b></span>
         </div>
       </div>
-      <div class="max-w-md mt-5 pt-5">
-        <div class="pb-2">Zadaj pytanie wyborcze konfederacji?</div>
+      <div class="max-w-screen-sm mt-5 pt-5 w-full">
+        <div class="pb-2 text-white font-medium text-sm pl-2">
+          Zadaj pytanie wyborcze konfederacji?
+        </div>
         <form onsubmit="event.preventDefault(); handleRequest()">
-			<div class="flex w-full">
-          <textarea
-            id="inputText"
-            class="w-full p-2 border-none rounded-xl mb-2"
-            placeholder="Twoje pytanie"
-            style="color: black"
-            autofocus
-            minlength="5"
-            required
-          ></textarea>
-		  </div>
-		  <div class="flex justify-center">
-          <button id="button" style="background-color: rgb(86 0 255/1); min-width: 150px;" class="hover:bg-blue-700 text-white font-medium text-sm py-2 px-4 rounded-xl" type="submit">
-            Zapytaj
-          </button>
-          </button>
-		  </div>
+          <div class="w-full">
+            <textarea
+              id="inputText"
+              class="w-full p-2 border-none rounded-xl mb-2"
+              placeholder="Twoje pytanie"
+              style="color: black"
+              autofocus
+              minlength="5"
+              required
+            ></textarea>
+          </div>
+          <div class="flex justify-center">
+            <button
+              id="button"
+              class="bg-blue-700 text-white font-medium text-sm py-2 px-4 rounded-xl"
+              style="min-width: 150px"
+              type="submit"
+            >
+              Zapytaj
+            </button>
+          </div>
         </form>
         <div
           id="response"
-          class="text-center mt-5 max-h-96 overflow-y-scroll panel p-5 space-y-5 rounded-xl add-this-class"
+          class="text-center mt-5 min-h-screen max-h-96 overflow-y-scroll panel p-5 space-y-5 rounded-xl add-this-class"
           style="background-color: rgba(11, 19, 43, 1)"
         ></div>
       </div>
-	  <div id="photo-container" class="flex flex-col items-center text-align max-w-md mt-5 pt-5">
-        <img src="photo.jpeg" alt="A photo" style="max-width: 60%; height: auto; border-radius: 10px;" />
-	  </div>
-      <footer class="text-center mt-auto mb-2">
+      <footer class="text-center mt-5 mb-2">
         <a
           href="https://konfederacja.pl/app/uploads/Konfederacja_WiN_Program_2023.pdf"
           target="_blank"
           rel="noopener noreferrer"
-          >program wyborczy konfederacja 2023</a
+          class="text-blue-400"
         >
+          program wyborczy konfederacja 2023
+        </a>
         | asystent: bard |
-        <a href="https://twitter.com/AdrianGra1" target="_blank" rel="noopener noreferrer">X</a>
+        <a
+          href="https://twitter.com/AdrianGra1"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-blue-400"
+        >
+          X
+        </a>
       </footer>
-    </div>
     </div>
 
     <script>
       const button = document.getElementById("button");
       const inputText = document.getElementById("inputText");
       const responseDiv = document.getElementById("response");
-	  const photoContainer = document.getElementById("photo-container");
-      responseDiv.style.display = "none";
+      const img = document.createElement("img");
+      img.src = "photo.jpeg";
+      img.alt = "A photo";
+      img.classList.add("w-full", "h-auto", "rounded-xl");
+      responseDiv.appendChild(img);
 
       inputText.addEventListener("keyup", function (event) {
         if (event.keyCode === 13) {
@@ -112,6 +125,7 @@
 
         button.textContent = "...";
         button.disabled = true;
+        responseDiv.innerHTML = `<div class="text-left pl-2"><span class="font-bold"></span> Szukam odpowiedzi m.in na podstawie dokumentu programu wyborczego Konfederacja WiN Program 2023 ..</div>`;
 
         fetch("https://pwyborczytalk.onrender.com/api/chat/completions", {
           method: "POST",
@@ -124,25 +138,22 @@
         })
           .then((response) => response.json())
           .then((data) => {
-			      photoContainer.style.display = "none";
             button.textContent = "Zapytaj";
             button.disabled = false;
             responseDiv.style.display = "block";
             responseDiv.innerHTML = "";
 
-            // sometimes returns "pl" as answer
+            // sometimes returns "pl" as an answer
             if (data.answer === "pl") {
-                    responseDiv.innerHTML += `<div class="text-left pl-2"><span class="font-bold"></span> Nie znam odpowiedzi.</div>`;
-                  } else {
+              responseDiv.innerHTML += `<div class="text-left pl-2"><span class="font-bold"></span> Nie znam odpowiedzi.</div>`;
+            } else {
               responseDiv.innerHTML = `<div class="text-left pl-2"><span class="font-bold">Pytanie: </span> ${data.ask}</div>`;
               responseDiv.innerHTML += `<div class="text-left pl-2"><span class="font-bold"></span> ${data.answer}</div>`;
             }
 
             inputText.value = "";
-
           })
           .catch((error) => {
-			      photoContainer.style.display = "block";
             button.textContent = "Spróbuj ponownie";
             button.disabled = false;
 
@@ -155,7 +166,6 @@
             responseDiv.textContent = "API request failed.";
           });
       }
-
     </script>
   </body>
 </html>
