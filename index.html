@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>WyborczyTalk</title>
+    <title>cryptoregulationTalk</title>
 
     <!-- Include Tailwind CSS from a CDN -->
     <link
@@ -40,22 +40,21 @@
   <body>
     <div class="flex flex-col items-center min-h-screen pt-5">
       <div class="flex justify-center flex-wrap">
-        <div class="text-5xl text-white">wyborczy</div>
+        <div class="text-5xl text-white">cryptoregulation</div>
         <div class="text-5xl">
           <span class="text-gradient"><b>Talk</b></span>
         </div>
       </div>
       <div class="max-w-screen-sm mt-5 pt-5 w-full">
         <div class="pb-2 text-white font-medium text-sm pl-2">
-          Zadaj pytanie wyborcze konfederacji? (polecam dodać "na podstawie
-          programu wyborczego")
+          Ask question about MiCa regulations
         </div>
         <form onsubmit="event.preventDefault(); handleRequest()">
           <div class="w-full">
             <textarea
               id="inputText"
               class="w-full p-2 border-none rounded-xl mb-2"
-              placeholder="Twoje pytanie"
+              placeholder="Your question"
               style="color: black; height: 80px"
               autofocus
               minlength="5"
@@ -69,7 +68,7 @@
               style="min-width: 150px"
               type="submit"
             >
-              Zapytaj
+              Ask
             </button>
           </div>
         </form>
@@ -81,22 +80,14 @@
       </div>
       <footer class="text-center mt-5 mb-2">
         <a
-          href="https://konfederacja.pl/app/uploads/Konfederacja_WiN_Program_2023.pdf"
+          href="https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32023R1114"
           target="_blank"
           rel="noopener noreferrer"
           class="text-blue-400"
         >
-          program wyborczy konfederacja 2023
+          REGULATION (EU) 2023/11/14
         </a>
-        | asystent: bard |
-        <a
-          href="https://twitter.com/AdrianGra1"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-blue-400"
-        >
-          X
-        </a>
+        | asystent: bard
       </footer>
     </div>
 
@@ -105,8 +96,9 @@
       const inputText = document.getElementById("inputText");
       const responseDiv = document.getElementById("response");
       const img = document.createElement("img");
-      img.src = "photo.jpeg";
-      img.alt = "A photo";
+      img.src =
+        "https://public.bnbstatic.com/image/pgc/202309/7d49042f626bf5d408cd8532d2be2082.png";
+      img.alt = "mica regulation";
       img.classList.add("w-full", "h-auto", "rounded-xl");
       responseDiv.appendChild(img);
 
@@ -119,7 +111,7 @@
 
         button.textContent = "...";
         button.disabled = true;
-        responseDiv.innerHTML = `<div class="text-left pl-2"><span class="font-bold"></span> Szukam odpowiedzi m.in na podstawie dokumentu programu wyborczego Konfederacja WiN Program 2023 ..</div>`;
+        responseDiv.innerHTML = `<div class="text-left pl-2"><span class="font-bold"></span> Bard is looking for an answer, based on document of REGULATION on markets in crypto-assets</div>`;
 
         fetch("https://pwyborczytalk.onrender.com/api/chat/completions", {
           method: "POST",
@@ -132,23 +124,23 @@
         })
           .then((response) => response.json())
           .then((data) => {
-            button.textContent = "Zapytaj";
+            button.textContent = "Ask";
             button.disabled = false;
             responseDiv.style.display = "block";
             responseDiv.innerHTML = "";
 
             // sometimes returns "pl" as an answer
             if (data.answer === "pl") {
-              responseDiv.innerHTML += `<div class="text-left pl-2"><span class="font-bold"></span> Nie znam odpowiedzi.</div>`;
+              responseDiv.innerHTML += `<div class="text-left pl-2"><span class="font-bold"></span> I don't know answer.</div>`;
             } else {
-              responseDiv.innerHTML = `<div class="text-left pl-2"><span class="font-bold">Pytanie: </span> ${data.ask}</div>`;
+              responseDiv.innerHTML = `<div class="text-left pl-2"><span class="font-bold">Question: </span> ${data.ask}</div>`;
               responseDiv.innerHTML += `<div class="text-left pl-2"><span class="font-bold"></span> ${data.answer}</div>`;
             }
 
             inputText.value = "";
           })
           .catch((error) => {
-            button.textContent = "Spróbuj ponownie";
+            button.textContent = "Try again";
             button.disabled = false;
 
             console.error("API request failed:", error);
