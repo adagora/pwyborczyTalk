@@ -87,7 +87,7 @@
         >
           REGULATION (EU) 2023/11/14
         </a>
-        | asystent: bard
+        | asystent: gpt-3-turbo
       </footer>
     </div>
 
@@ -111,16 +111,16 @@
 
         button.textContent = "...";
         button.disabled = true;
-        responseDiv.innerHTML = `<div class="text-left pl-2"><span class="font-bold"></span> Bard is looking for an answer, based on document of REGULATION on markets in crypto-assets</div>`;
+        responseDiv.innerHTML = `<div class="text-left pl-2"><span class="font-bold"></span> It is looking for an answer, based on document of REGULATION on markets in crypto-assets</div>`;
 
         fetch("https://pwyborczytalk.onrender.com/api/chat/completions", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            input: inputValue,
-          }),
+            input: inputValue
+          })
         })
           .then((response) => response.json())
           .then((data) => {
